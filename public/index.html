@@ -3,29 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TikTok Downloader | Console</title>
+  <title>TikTok Downloader | Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f3f7fc;
+      --bg: #f3f4f6;
       --surface: #ffffff;
-      --surface-soft: #f7fbff;
-      --surface-faint: #eef4fb;
-      --fg: #0f1d33;
-      --fg-secondary: #3e4f69;
-      --fg-muted: #6c7d97;
-      --fg-faint: #8fa0ba;
-      --accent: #0b66ff;
-      --accent-soft: #d8e8ff;
-      --success: #0f8f61;
+      --surface-soft: #f8f9fb;
+      --surface-faint: #f0f2f6;
+      --fg: #17181b;
+      --fg-secondary: #30333a;
+      --fg-muted: #676d79;
+      --fg-faint: #9aa0ad;
+      --accent: #0f766e;
+      --accent-soft: #dbf1ee;
+      --success: #0f766e;
       --error: #c5393d;
-      --border: rgba(12, 26, 52, 0.12);
-      --border-subtle: rgba(12, 26, 52, 0.08);
+      --border: rgba(23, 24, 27, 0.12);
+      --border-subtle: rgba(23, 24, 27, 0.08);
       --radius-sm: 6px;
       --radius-md: 8px;
-      --transition: 220ms cubic-bezier(0.25, 1, 0.5, 1);
+      --transition: 200ms cubic-bezier(0.25, 1, 0.5, 1);
     }
 
     * {
@@ -40,113 +40,126 @@
       font-size: 14px;
       line-height: 1.5;
       color: var(--fg);
-      background:
-        radial-gradient(1000px 420px at 90% -5%, rgba(11, 102, 255, 0.08), transparent 60%),
-        radial-gradient(760px 380px at -5% 100%, rgba(15, 143, 97, 0.08), transparent 64%),
-        var(--bg);
-      padding: 24px;
+      background: var(--bg);
+      padding: 20px;
     }
 
     .app {
-      max-width: 1080px;
+      max-width: 1140px;
       margin: 0 auto;
       display: grid;
-      gap: 24px;
+      gap: 20px;
       animation: reveal 220ms cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    .topbar {
+    .header {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 16px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
 
-    .brand {
+    .header-left {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .brand-mark {
-      width: 36px;
-      height: 36px;
+    .brand-chip {
+      width: 40px;
+      height: 40px;
       display: grid;
       place-items: center;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #e8f1ff, #f7fbff);
+      background: var(--surface-soft);
       color: var(--accent);
       font-weight: 600;
-      font-size: 16px;
+      font-size: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
     }
 
-    .brand h1 {
+    .header h1 {
       font-size: 18px;
-      line-height: 20px;
+      line-height: 1.2;
       font-weight: 600;
       letter-spacing: -0.02em;
-      color: var(--fg);
+      margin-bottom: 2px;
     }
 
-    .brand p {
+    .header p {
       font-size: 12px;
       color: var(--fg-muted);
     }
 
-    .context {
-      display: flex;
+    .status-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      color: var(--fg-muted);
+      gap: 8px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 999px;
+      padding: 8px 12px;
       font-size: 12px;
+      color: var(--fg-secondary);
+      background: var(--surface-soft);
     }
 
-    .dot {
+    .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--success);
-    }
-
-    .workspace {
-      font-family: 'IBM Plex Mono', monospace;
-      font-size: 12px;
-      color: var(--fg-secondary);
-      padding: 8px 12px;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      background: var(--surface-soft);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.16);
     }
 
     .layout {
       display: grid;
-      grid-template-columns: 1.7fr 1fr;
-      gap: 24px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
+      gap: 20px;
     }
 
     .panel {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 24px;
+      padding: 20px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
     .panel-title {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 600;
       letter-spacing: -0.02em;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       color: var(--fg);
     }
 
     .panel-subtitle {
       color: var(--fg-muted);
-      margin-bottom: 24px;
+      max-width: 65ch;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--fg-muted);
+      font-family: 'IBM Plex Mono', monospace;
+      padding-top: 4px;
+      white-space: nowrap;
     }
 
     .label {
@@ -159,11 +172,12 @@
       color: var(--fg-secondary);
     }
 
-    .input-row {
+    .input-grid {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       gap: 12px;
       align-items: center;
+      margin-bottom: 12px;
     }
 
     .text-input {
@@ -189,39 +203,61 @@
       color: var(--fg-faint);
     }
 
-    .button-primary {
+    .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       white-space: nowrap;
-      border: 1px solid rgba(11, 102, 255, 0.4);
+      gap: 6px;
       border-radius: var(--radius-sm);
-      background: var(--accent);
-      color: #ffffff;
       font-size: 14px;
       font-weight: 500;
-      padding: 12px 20px;
+      padding: 12px 16px;
       cursor: pointer;
-      transition: filter var(--transition), transform var(--transition);
+      transition: filter var(--transition), transform var(--transition), background-color var(--transition), border-color var(--transition);
     }
 
-    .button-primary:hover {
-      filter: brightness(0.95);
-    }
-
-    .button-primary:active {
+    .btn:active {
       transform: translateY(1px);
     }
 
-    .button-primary:disabled {
+    .btn-primary {
+      border: 1px solid rgba(15, 118, 110, 0.4);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(0.95);
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--border-subtle);
+      background: var(--surface-soft);
+      color: var(--fg-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #f0f2f6;
+      border-color: rgba(23, 24, 27, 0.14);
+    }
+
+    .btn:disabled {
       cursor: not-allowed;
       filter: grayscale(0.25);
       opacity: 0.68;
     }
 
+    .helper {
+      font-size: 12px;
+      color: var(--fg-faint);
+      margin-bottom: 16px;
+    }
+
     .status {
       display: none;
-      margin-top: 16px;
+      width: 100%;
+      margin-bottom: 16px;
       padding: 12px 16px;
       border-radius: var(--radius-sm);
       border: 1px solid transparent;
@@ -233,8 +269,8 @@
     .status.loading {
       display: inline-flex;
       background: var(--accent-soft);
-      border-color: rgba(11, 102, 255, 0.28);
-      color: #17468f;
+      border-color: rgba(15, 118, 110, 0.28);
+      color: #0b5a53;
     }
 
     .status.error {
@@ -261,7 +297,6 @@
     }
 
     .result-card {
-      margin-top: 20px;
       display: none;
       background: var(--surface-faint);
       border: 1px solid var(--border-subtle);
@@ -279,21 +314,40 @@
       font-weight: 500;
     }
 
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) minmax(0, 1.2fr);
+      gap: 16px;
+      align-items: start;
+    }
+
     .preview-wrap {
       margin-bottom: 16px;
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       background: var(--surface);
       overflow: hidden;
-      display: none;
+      display: block;
+      aspect-ratio: 9 / 16;
     }
 
     .preview-image {
       width: 100%;
-      max-height: 280px;
+      height: 100%;
       object-fit: cover;
       display: block;
       background: var(--surface-faint);
+    }
+
+    .preview-fallback {
+      height: 180px;
+      display: grid;
+      place-items: center;
+      color: var(--fg-faint);
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #f6f9ff, #edf3fc);
     }
 
     .video-title {
@@ -302,11 +356,13 @@
       color: var(--fg);
       margin-bottom: 16px;
       line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .meta-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
@@ -345,18 +401,18 @@
       gap: 8px;
       white-space: nowrap;
       text-decoration: none;
-      border: 1px solid rgba(11, 102, 255, 0.36);
+      border: 1px solid rgba(15, 118, 110, 0.36);
       border-radius: var(--radius-sm);
       background: #ffffff;
       color: var(--accent);
       font-weight: 500;
-      padding: 10px 16px;
+      padding: 11px 16px;
       transition: background-color var(--transition), border-color var(--transition);
     }
 
     .download-link:hover {
-      background: #f2f7ff;
-      border-color: rgba(11, 102, 255, 0.52);
+      background: #f2f6f5;
+      border-color: rgba(15, 118, 110, 0.52);
     }
 
     .aside {
@@ -374,9 +430,7 @@
     }
 
     .aside-card h2 {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 14px;
       font-weight: 500;
       color: var(--fg-secondary);
       margin-bottom: 12px;
@@ -390,17 +444,17 @@
       font-size: 13px;
     }
 
-    .aside-card li {
-      padding-left: 12px;
-      border-left: 2px solid var(--surface-faint);
+    .aside-card li + li {
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
     }
 
-    .kpi {
+    .status-card {
       display: grid;
       gap: 8px;
     }
 
-    .kpi-value {
+    .status-value {
       font-family: 'IBM Plex Mono', monospace;
       font-size: 24px;
       font-weight: 500;
@@ -409,7 +463,7 @@
       letter-spacing: -0.02em;
     }
 
-    .kpi-label {
+    .status-label {
       color: var(--fg-muted);
       font-size: 12px;
     }
@@ -443,33 +497,51 @@
         grid-template-columns: 1fr;
       }
 
-      .topbar {
+      .header {
         flex-direction: column;
         align-items: flex-start;
       }
 
-      .workspace {
-        width: 100%;
+      .panel-head {
+        flex-direction: column;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-wrap {
+        max-width: 320px;
       }
     }
 
     @media (max-width: 600px) {
       body {
-        padding: 16px;
+        padding: 12px;
       }
 
       .panel {
         padding: 16px;
       }
 
-      .input-row {
+      .input-grid {
         grid-template-columns: 1fr;
       }
 
-      .button-primary {
+      .btn {
         width: 100%;
       }
 
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .steps {
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 420px) {
       .meta-grid {
         grid-template-columns: 1fr;
       }
@@ -478,28 +550,32 @@
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">TT</div>
+    <header class="header">
+      <div class="header-left">
+        <div class="brand-chip">TTDL</div>
         <div>
-          <h1>TikTok Downloader Console</h1>
-          <p>Extraccion directa de metadata y descarga MP4</p>
+          <h1>TikTok Downloader Workspace</h1>
+          <p>Analiza URL, revisa metadatos y descarga el MP4 en un flujo simple.</p>
         </div>
       </div>
-      <div class="context">
-        <span class="dot" aria-hidden="true"></span>
+      <div class="status-badge">
+        <span class="status-dot" aria-hidden="true"></span>
         <span>Servicio activo</span>
-        <span class="workspace">workspace: DSN-IM-TIKTOK</span>
       </div>
     </header>
 
     <section class="layout">
       <article class="panel">
-        <h2 class="panel-title">Nueva descarga</h2>
-        <p class="panel-subtitle">Pega la URL del video y genera un enlace de descarga sin salir de la consola.</p>
+        <div class="panel-head">
+          <div>
+            <h2 class="panel-title">Nueva descarga</h2>
+            <p class="panel-subtitle">Pega la URL del video, analiza la información y descarga el archivo en un solo paso.</p>
+          </div>
+          <div class="steps">1.Pegar URL 2.Analizar 3.Descargar</div>
+        </div>
 
         <label class="label" for="url">URL del video</label>
-        <div class="input-row">
+        <div class="input-grid">
           <input
             id="url"
             class="text-input"
@@ -507,34 +583,44 @@
             placeholder="https://www.tiktok.com/@usuario/video/..."
             autocomplete="off"
           />
-          <button id="btn" class="button-primary" type="button" onclick="descargar()">Analizar y descargar</button>
+          <button id="paste-btn" class="btn btn-secondary" type="button">Pegar</button>
+          <button id="btn" class="btn btn-primary" type="button" onclick="descargar()">Analizar video</button>
         </div>
+        <p class="helper">Acepta enlaces completos, acortados de vt.tiktok.com y enlaces compartidos desde la app.</p>
 
         <div class="status" id="status" role="status" aria-live="polite"></div>
 
         <section class="result-card" id="result" aria-label="Resultado de video">
-          <p class="result-header">Resumen del video</p>
-          <div class="preview-wrap" id="preview-wrap">
-            <img class="preview-image" id="preview-image" alt="Vista previa del video" />
-          </div>
-          <p class="video-title" id="video-title"></p>
+          <p class="result-header">Resultado del analisis</p>
+          <div class="result-grid">
+            <div>
+              <div class="preview-wrap" id="preview-wrap">
+                <img class="preview-image" id="preview-image" alt="Vista previa del video" />
+                <div class="preview-fallback" id="preview-fallback">SIN PREVIEW</div>
+              </div>
+            </div>
 
-          <div class="meta-grid">
-            <div class="meta-item">
-              <span class="meta-label">Duracion</span>
-              <span class="meta-value" id="meta-duration">-</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Vistas</span>
-              <span class="meta-value" id="meta-views">-</span>
-            </div>
-            <div class="meta-item">
-              <span class="meta-label">Creador</span>
-              <span class="meta-value" id="meta-uploader">-</span>
+            <div>
+              <p class="video-title" id="video-title"></p>
+
+              <div class="meta-grid">
+                <div class="meta-item">
+                  <span class="meta-label">Duracion</span>
+                  <span class="meta-value" id="meta-duration">-</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Vistas</span>
+                  <span class="meta-value" id="meta-views">-</span>
+                </div>
+                <div class="meta-item">
+                  <span class="meta-label">Creador</span>
+                  <span class="meta-value" id="meta-uploader">-</span>
+                </div>
+              </div>
+
+              <a class="download-link" id="download-link" href="#" target="_blank" rel="noopener noreferrer">Descargar MP4</a>
             </div>
           </div>
-
-          <a class="download-link" id="download-link" href="#" target="_blank" rel="noopener noreferrer">Descargar MP4</a>
         </section>
       </article>
 
@@ -542,16 +628,16 @@
         <section class="aside-card">
           <h2>Guia rapida</h2>
           <ul>
-            <li>Usa enlaces completos de TikTok para mejorar la deteccion.</li>
-            <li>Si el video es privado, la API puede rechazar la solicitud.</li>
-            <li>La descarga inicia al abrir el enlace generado.</li>
+            <li>Pega la URL y presiona Analizar video.</li>
+            <li>Revisa los datos y la imagen de vista previa.</li>
+            <li>Haz clic en Descargar MP4 para iniciar la descarga.</li>
           </ul>
         </section>
 
-        <section class="aside-card kpi">
-          <h2>Estado</h2>
-          <div class="kpi-value">200</div>
-          <div class="kpi-label">health check disponible en /health</div>
+        <section class="aside-card status-card">
+          <h2>Estado de API</h2>
+          <div class="status-value">/health</div>
+          <div class="status-label">Endpoint de verificacion listo para Docker y despliegues.</div>
         </section>
       </aside>
     </section>
@@ -580,15 +666,18 @@
     function setPreview(coverUrl) {
       const wrap = document.getElementById('preview-wrap');
       const image = document.getElementById('preview-image');
+      const fallback = document.getElementById('preview-fallback');
 
       if (!coverUrl) {
         image.removeAttribute('src');
-        wrap.style.display = 'none';
+        wrap.style.display = 'block';
+        fallback.style.display = 'grid';
         return;
       }
 
       image.src = coverUrl;
       wrap.style.display = 'block';
+      fallback.style.display = 'none';
     }
 
     function showStatus(message, type, allowHtml) {
@@ -643,11 +732,28 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('url');
+      const pasteBtn = document.getElementById('paste-btn');
+
+      pasteBtn.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            input.value = text.trim();
+            input.focus();
+          }
+        } catch (error) {
+          showStatus('No se pudo leer el portapapeles. Pega la URL manualmente.', 'error', false);
+        }
+      });
+
       document.getElementById('url').addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
           descargar();
         }
       });
+
+      setPreview(null);
     });
   </script>
 </body>
