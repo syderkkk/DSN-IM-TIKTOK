@@ -1,0 +1,26 @@
+{
+  "name": "dsn-im-tiktok",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/syderkkk/DSN-IM-TIKTOK.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/syderkkk/DSN-IM-TIKTOK/issues"
+  },
+  "homepage": "https://github.com/syderkkk/DSN-IM-TIKTOK#readme",
+  "dependencies": {
+    "@tobyg74/tiktok-api-dl": "^1.3.7",
+    "express": "^5.2.1"
+  }
+}

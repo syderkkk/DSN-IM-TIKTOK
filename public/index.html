@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TikTok Downloader | Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f7fc;
+      --surface: #ffffff;
+      --surface-soft: #f7fbff;
+      --surface-faint: #eef4fb;
+      --fg: #0f1d33;
+      --fg-secondary: #3e4f69;
+      --fg-muted: #6c7d97;
+      --fg-faint: #8fa0ba;
+      --accent: #0b66ff;
+      --accent-soft: #d8e8ff;
+      --success: #0f8f61;
+      --error: #c5393d;
+      --border: rgba(12, 26, 52, 0.12);
+      --border-subtle: rgba(12, 26, 52, 0.08);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --transition: 220ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--fg);
+      background:
+        radial-gradient(1000px 420px at 90% -5%, rgba(11, 102, 255, 0.08), transparent 60%),
+        radial-gradient(760px 380px at -5% 100%, rgba(15, 143, 97, 0.08), transparent 64%),
+        var(--bg);
+      padding: 24px;
+    }
+
+    .app {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: grid;
+      gap: 24px;
+      animation: reveal 220ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .topbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #e8f1ff, #f7fbff);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .brand h1 {
+      font-size: 18px;
+      line-height: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+    }
+
+    .brand p {
+      font-size: 12px;
+      color: var(--fg-muted);
+    }
+
+    .context {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--fg-muted);
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .workspace {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--fg-secondary);
+      padding: 8px 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: var(--fg);
+    }
+
+    .panel-subtitle {
+      color: var(--fg-muted);
+      margin-bottom: 24px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--fg-secondary);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .text-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-soft);
+      color: var(--fg);
+      font-size: 14px;
+      font-family: 'IBM Plex Sans', sans-serif;
+      padding: 12px 16px;
+      transition: border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: rgba(11, 102, 255, 0.55);
+      box-shadow: 0 0 0 3px rgba(11, 102, 255, 0.1);
+      background: var(--surface);
+    }
+
+    .text-input::placeholder {
+      color: var(--fg-faint);
+    }
+
+    .button-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      border: 1px solid rgba(11, 102, 255, 0.4);
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: filter var(--transition), transform var(--transition);
+    }
+
+    .button-primary:hover {
+      filter: brightness(0.95);
+    }
+
+    .button-primary:active {
+      transform: translateY(1px);
+    }
+
+    .button-primary:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.25);
+      opacity: 0.68;
+    }
+
+    .status {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      font-size: 13px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status.loading {
+      display: inline-flex;
+      background: var(--accent-soft);
+      border-color: rgba(11, 102, 255, 0.28);
+      color: #17468f;
+    }
+
+    .status.error {
+      display: inline-flex;
+      background: #fdeef0;
+      border-color: rgba(197, 57, 61, 0.3);
+      color: var(--error);
+    }
+
+    .status.success {
+      display: inline-flex;
+      background: #e9f8f2;
+      border-color: rgba(15, 143, 97, 0.28);
+      color: var(--success);
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(23, 70, 143, 0.2);
+      border-top-color: #17468f;
+      animation: spin 700ms linear infinite;
+    }
+
+    .result-card {
+      margin-top: 20px;
+      display: none;
+      background: var(--surface-faint);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      animation: reveal 220ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .result-header {
+      margin-bottom: 12px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--fg-secondary);
+      font-weight: 500;
+    }
+
+    .preview-wrap {
+      margin-bottom: 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      overflow: hidden;
+      display: none;
+    }
+
+    .preview-image {
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      display: block;
+      background: var(--surface-faint);
+    }
+
+    .video-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--fg);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      padding: 12px;
+    }
+
+    .meta-label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--fg-faint);
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .meta-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      color: var(--fg-secondary);
+      min-height: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      text-decoration: none;
+      border: 1px solid rgba(11, 102, 255, 0.36);
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      color: var(--accent);
+      font-weight: 500;
+      padding: 10px 16px;
+      transition: background-color var(--transition), border-color var(--transition);
+    }
+
+    .download-link:hover {
+      background: #f2f7ff;
+      border-color: rgba(11, 102, 255, 0.52);
+    }
+
+    .aside {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .aside-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      animation: reveal 220ms cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .aside-card h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 500;
+      color: var(--fg-secondary);
+      margin-bottom: 12px;
+    }
+
+    .aside-card ul {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: var(--fg-muted);
+      font-size: 13px;
+    }
+
+    .aside-card li {
+      padding-left: 12px;
+      border-left: 2px solid var(--surface-faint);
+    }
+
+    .kpi {
+      display: grid;
+      gap: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 24px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-label {
+      color: var(--fg-muted);
+      font-size: 12px;
+    }
+
+    .footer {
+      color: var(--fg-faint);
+      font-size: 12px;
+      text-align: center;
+      padding-bottom: 8px;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .workspace {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 16px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button-primary {
+        width: 100%;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">TT</div>
+        <div>
+          <h1>TikTok Downloader Console</h1>
+          <p>Extraccion directa de metadata y descarga MP4</p>
+        </div>
+      </div>
+      <div class="context">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Servicio activo</span>
+        <span class="workspace">workspace: DSN-IM-TIKTOK</span>
+      </div>
+    </header>
+
+    <section class="layout">
+      <article class="panel">
+        <h2 class="panel-title">Nueva descarga</h2>
+        <p class="panel-subtitle">Pega la URL del video y genera un enlace de descarga sin salir de la consola.</p>
+
+        <label class="label" for="url">URL del video</label>
+        <div class="input-row">
+          <input
+            id="url"
+            class="text-input"
+            type="text"
+            placeholder="https://www.tiktok.com/@usuario/video/..."
+            autocomplete="off"
+          />
+          <button id="btn" class="button-primary" type="button" onclick="descargar()">Analizar y descargar</button>
+        </div>
+
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+
+        <section class="result-card" id="result" aria-label="Resultado de video">
+          <p class="result-header">Resumen del video</p>
+          <div class="preview-wrap" id="preview-wrap">
+            <img class="preview-image" id="preview-image" alt="Vista previa del video" />
+          </div>
+          <p class="video-title" id="video-title"></p>
+
+          <div class="meta-grid">
+            <div class="meta-item">
+              <span class="meta-label">Duracion</span>
+              <span class="meta-value" id="meta-duration">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Vistas</span>
+              <span class="meta-value" id="meta-views">-</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Creador</span>
+              <span class="meta-value" id="meta-uploader">-</span>
+            </div>
+          </div>
+
+          <a class="download-link" id="download-link" href="#" target="_blank" rel="noopener noreferrer">Descargar MP4</a>
+        </section>
+      </article>
+
+      <aside class="aside" aria-label="Contexto de uso">
+        <section class="aside-card">
+          <h2>Guia rapida</h2>
+          <ul>
+            <li>Usa enlaces completos de TikTok para mejorar la deteccion.</li>
+            <li>Si el video es privado, la API puede rechazar la solicitud.</li>
+            <li>La descarga inicia al abrir el enlace generado.</li>
+          </ul>
+        </section>
+
+        <section class="aside-card kpi">
+          <h2>Estado</h2>
+          <div class="kpi-value">200</div>
+          <div class="kpi-label">health check disponible en /health</div>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="footer">Uso educativo. Respeta derechos de autor y terminos de plataforma.</footer>
+  </main>
+
+  <script>
+    function formatDuration(totalSeconds) {
+      const seconds = Number(totalSeconds);
+      if (!Number.isFinite(seconds) || seconds <= 0) {
+        return '-';
+      }
+
+      const mins = Math.floor(seconds / 60);
+      const rem = seconds % 60;
+      return `${mins}:${String(rem).padStart(2, '0')}`;
+    }
+
+    function setMeta({ duration, views, uploader }) {
+      document.getElementById('meta-duration').textContent = formatDuration(duration);
+      document.getElementById('meta-views').textContent = views ? Number(views).toLocaleString('es-PE') : '-';
+      document.getElementById('meta-uploader').textContent = uploader || '-';
+    }
+
+    function setPreview(coverUrl) {
+      const wrap = document.getElementById('preview-wrap');
+      const image = document.getElementById('preview-image');
+
+      if (!coverUrl) {
+        image.removeAttribute('src');
+        wrap.style.display = 'none';
+        return;
+      }
+
+      image.src = coverUrl;
+      wrap.style.display = 'block';
+    }
+
+    function showStatus(message, type, allowHtml) {
+      const statusEl = document.getElementById('status');
+      statusEl.className = `status ${type}`;
+
+      if (allowHtml) {
+        statusEl.innerHTML = message;
+      } else {
+        statusEl.textContent = message;
+      }
+    }
+
+    async function descargar() {
+      const url = document.getElementById('url').value.trim();
+      const btn = document.getElementById('btn');
+      const result = document.getElementById('result');
+
+      if (!url) {
+        showStatus('Ingresa una URL valida de TikTok.', 'error', false);
+        return;
+      }
+
+      btn.disabled = true;
+      result.style.display = 'none';
+      showStatus('<span class="spinner" aria-hidden="true"></span>Analizando video...', 'loading', true);
+
+      try {
+        const response = await fetch('/api/info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || 'No se pudo procesar la URL.');
+        }
+
+        document.getElementById('video-title').textContent = data.title || 'Video de TikTok';
+        document.getElementById('download-link').href = `/api/download?url=${encodeURIComponent(url)}`;
+        setMeta(data);
+        setPreview(data.cover);
+
+        result.style.display = 'block';
+        showStatus('Video listo para descarga.', 'success', false);
+      } catch (error) {
+        showStatus(error.message || 'Error inesperado al procesar la solicitud.', 'error', false);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('url').addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          descargar();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
