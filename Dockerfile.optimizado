@@ -1,31 +1,27 @@
-# Imagen Alpine para menor tamaño
-FROM node:20-alpine
+# Imagen slim para mejor compatibilidad de dependencias nativas
+FROM node:20-slim
 
 LABEL maintainer="italo.mendoza@tecsup.edu.pe"
-LABEL description="DSN - PC01 - TikTok Downloader - versión optimizada"
-
-# Dependencias del sistema necesarias en Alpine
-RUN apk add --no-cache python3 make g++
+LABEL description="DSN - PC01 - TikTok Downloader - version optimizada"
 
 WORKDIR /app
 
 # Copiar e instalar solo dependencias de producción
 COPY package*.json ./
-RUN npm install --omit=dev
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Copiar código
 COPY app.js .
 COPY public ./public
 
 # Usuario no-root para seguridad
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-RUN chown -R appuser:appgroup /app
+RUN useradd -m -u 10001 appuser && chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
-  CMD wget -qO- http://localhost:3000/health || exit 1
+  CMD node -e "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
 CMD ["node", "app.js"]
